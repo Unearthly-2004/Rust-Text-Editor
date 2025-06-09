@@ -1,0 +1,6 @@
+in rust --> target shows 2 builds after 1-> cargo build for debug build and 2-> cargo build --release for the customers/end user build
+1-->Debug build is like a rough version: fast to build, easy to test.
+2-->Release build is polished: slower to build, faster and smoother to run.
+
+3-->debug builds disable the optimisations to prioritise speed in development,
+and release builds enable them to prioritise speed in execution.
