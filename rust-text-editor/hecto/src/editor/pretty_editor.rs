@@ -5,6 +5,7 @@ pub struct PrettyEditor {
     should_quit: bool,
     rows: Vec<String>,
     status_message: String,
+    cursor_row: usize,
 }
 
 impl PrettyEditor {
@@ -13,10 +14,13 @@ impl PrettyEditor {
             should_quit: false,
             rows: vec![
                 "Welcome to Pretty Editor!".to_string(),
-                "Now with line numbers and a status bar.".to_string(),
+                "Now with cursor movement (j/k),".to_string(),
+                "line highlighting, and a better status bar.".to_string(),
+                "Try pressing j or k to move the highlight.".to_string(),
                 "Press 'q' to quit.".to_string(),
             ],
             status_message: String::new(),
+            cursor_row: 0,
         }
     }
 
@@ -31,7 +35,7 @@ impl PrettyEditor {
     }
 
     fn default_status(&self) -> String {
-        format!("Pretty Editor - {} lines", self.rows.len())
+        format!("Pretty Editor | {} lines", self.rows.len())
     }
 
     fn process_keypress(&mut self) {
@@ -39,6 +43,16 @@ impl PrettyEditor {
         if let Ok(_) = io::stdin().read_exact(&mut buffer) {
             match buffer[0] {
                 b'q' => self.should_quit = true,
+                b'j' => {
+                    if self.cursor_row + 1 < self.rows.len() {
+                        self.cursor_row += 1;
+                    }
+                }
+                b'k' => {
+                    if self.cursor_row > 0 {
+                        self.cursor_row -= 1;
+                    }
+                }
                 _ => {}
             }
         }
@@ -56,19 +70,33 @@ impl PrettyEditor {
     fn draw_rows(&self) {
         for (i, row) in self.rows.iter().enumerate() {
             let line_number = format!("{:>4} ", i + 1);
-            print!("\x1b[2m{}\x1b[0m{}\r\n", line_number, row);
+
+            if i == self.cursor_row {
+                // Highlight current row
+                print!("\x1b[7m\x1b[2m{}{}\x1b[0m\r\n", line_number, row);
+            } else {
+                print!("\x1b[2m{}\x1b[0m{}\r\n", line_number, row);
+            }
         }
     }
 
     fn draw_status_bar(&self) {
         let status = &self.status_message;
         let time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+        let cursor_info = format!("Line {}", self.cursor_row + 1);
 
         print!(
             "\x1b[7m{:<width$}\x1b[0m\r\n",
-            format!(" {} | Time: {}", status, time),
+            format!(" {} | {} | Time: {}", status, cursor_info, time),
             width = 80
         );
     }
 
-    fn clear
+    fn clear_screen() {
+        print!("\x1b[2J\x1b[H");
+    }
+
+    fn move_cursor_to(x: u16, y: u16) {
+        print!("\x1b[{};{}H", y + 1, x + 1);
+    }
+}
