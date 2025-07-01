@@ -10,8 +10,7 @@ const RESET: &str = "\x1b[0m";
 const CLEAR: &str = "\x1b[2J\x1b[H";
 
 // Config
-const WIDTH: usize = 80;
-const PADDING: usize = 4;
+
 
 pub struct PrettyEditor {
     rows: [&'static str; 6],
