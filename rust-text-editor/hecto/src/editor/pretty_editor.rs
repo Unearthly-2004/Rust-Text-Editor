@@ -5,9 +5,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 const CYAN: &str = "\x1b[36m";
 const BLUE_BG: &str = "\x1b[44m";
 const YELLOW_BG: &str = "\x1b[43m";
-const DIM: &str = "\x1b[2m";
-const RESET: &str = "\x1b[0m";
-const CLEAR: &str = "\x1b[2J\x1b[H";
+
 
 // Config
 
