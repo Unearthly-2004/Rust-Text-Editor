@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 crossterm = "0.29.0"
+termion = "4.0.5"
+unicode-segmentation = "1.12.0"
